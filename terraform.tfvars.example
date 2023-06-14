@@ -1,0 +1,17 @@
+allowed_ports       = "22,80,443"
+ami                 = "ami-022e1a32d3f742bd8"
+aws_region          = "us-east-1"
+ebs_kms_key_id      = ""
+ebs_volume_size     = 20
+instance_name       = "my-ec2-instance"
+instance_type       = "t2.micro"
+key_name            = "key-name"
+private_ip          = "10.0.0.40"
+security_group_cidr = "10.0.0.0/24"
+subnet_id           = ""
+tags = {
+  "Environment": "Development",
+  "Owner": "Frankin Garcia"
+}
+use_private_ip = true
+vpc_id         = ""
