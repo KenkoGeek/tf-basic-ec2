@@ -11,7 +11,7 @@ variable "aws_region" {
 variable "vpc_id" {
   description = "VPC ID"
   type        = string
-  default = ""
+  default     = ""
   validation {
     condition     = can(regex("^vpc-[a-z0-9]{17}$", var.vpc_id))
     error_message = "The VPC ID format is invalid. It should follow the pattern 'vpc-XXXXXXXX'."
@@ -21,7 +21,7 @@ variable "vpc_id" {
 variable "subnet_id" {
   description = "Subnet ID"
   type        = string
-  default = ""
+  default     = ""
   validation {
     condition     = can(regex("^subnet-[a-z0-9]{17}$", var.subnet_id))
     error_message = "The Subnet ID format is invalid. Must follow the pattern 'subnet-XXXXXXXX'"
@@ -94,12 +94,12 @@ variable "ebs_volume_size" {
   }
 }
 
-variable "ebs_kms_key_id" {
+variable "kms_key_arn" {
   description = "KMS key ID to use for EBS volume encryption"
   type        = string
   default     = ""
   validation {
-    condition     = can(regex("^arn:aws:kms:.*:.*:key/.*$", var.ebs_kms_key_id))
+    condition     = can(regex("^arn:aws:kms:.*:.*:key/.*$", var.kms_key_arn))
     error_message = "Invalid KMS key ID format. Please provide a valid ARN for the KMS key."
   }
 }

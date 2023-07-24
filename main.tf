@@ -7,6 +7,11 @@
 #   }
 # }
 
+resource "aws_ebs_encryption_by_default" "enabled" {
+  count   = var.kms_key_arn == "" ? 1 : 0
+  enabled = true
+}
+
 resource "aws_security_group" "ec2_linux_sg" {
   vpc_id      = var.vpc_id
   description = "Security group for the ${var.instance_name}-instance"
@@ -78,11 +83,11 @@ resource "aws_instance" "ec2_linux" {
   }
 
   root_block_device {
-    volume_size = var.ebs_volume_size
-    encrypted   = true
-    kms_key_id  = var.ebs_kms_key_id
-    volume_type = "gp3"
-
+    volume_size           = var.ebs_volume_size
+    encrypted             = true
+    kms_key_id            = var.kms_key_arn == "" ? data.aws_ebs_default_kms_key.current.key_arn : var.kms_key_arn
+    volume_type           = "gp3"
+    delete_on_termination = true
   }
 
   tags = merge(var.tags, {
@@ -90,5 +95,4 @@ resource "aws_instance" "ec2_linux" {
   })
 
   private_ip = var.use_private_ip ? var.private_ip : null
-
 }
