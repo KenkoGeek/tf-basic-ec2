@@ -44,21 +44,8 @@ resource "aws_iam_instance_profile" "ec2_linux_profile" {
 }
 
 resource "aws_iam_role" "ec2_linux_role" {
-  name               = "${var.instance_name}-role"
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
+  name                = "${var.instance_name}-role"
+  assume_role_policy  = data.aws_iam_policy_document.ec2_role.json
   managed_policy_arns = [
     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
     "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
