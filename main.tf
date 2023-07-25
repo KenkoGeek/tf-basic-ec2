@@ -44,8 +44,8 @@ resource "aws_iam_instance_profile" "ec2_linux_profile" {
 }
 
 resource "aws_iam_role" "ec2_linux_role" {
-  name                = "${var.instance_name}-role"
-  assume_role_policy  = data.aws_iam_policy_document.ec2_role.json
+  name               = "${var.instance_name}-role"
+  assume_role_policy = data.aws_iam_policy_document.ec2_role.json
   managed_policy_arns = [
     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
     "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
