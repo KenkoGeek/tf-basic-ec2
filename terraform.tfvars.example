@@ -8,7 +8,7 @@ key_name            = "key-name"
 kms_key_arn         = ""
 private_ip          = "10.0.0.40"
 security_group_cidr = "10.0.0.0/24"
-subnet_id           = ""
+subnet_id           = "subnet-12345678"
 tags = {
   "Environment": "Development",
   "Owner": "Frankin Garcia"

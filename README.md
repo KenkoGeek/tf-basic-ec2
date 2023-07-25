@@ -39,7 +39,7 @@ terraform fmt
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 5.3.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.3.0 |
 
 ## Requirements
 
@@ -62,8 +62,8 @@ No modules.
 | [aws_iam_role.ec2_linux_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_instance.ec2_linux](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
 | [aws_security_group.ec2_linux_sg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
-| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_ebs_default_kms_key.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ebs_default_kms_key) | data source |
+| [aws_iam_policy_document.ec2_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
@@ -79,7 +79,7 @@ No modules.
 | <a name="input_kms_key_arn"></a> [kms\_key\_arn](#input\_kms\_key\_arn) | KMS key ID to use for EBS volume encryption | `string` | `""` | no |
 | <a name="input_private_ip"></a> [private\_ip](#input\_private\_ip) | Private IP address | `string` | `"10.0.0.40"` | no |
 | <a name="input_security_group_cidr"></a> [security\_group\_cidr](#input\_security\_group\_cidr) | CIDR block for the security group | `string` | `"10.0.0.0/24"` | no |
-| <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | Subnet ID | `string` | `""` | no |
+| <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | Subnet ID | `string` | `"subnet-12345678"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to be applied to resources | `map(string)` | <pre>{<br>  "Environment": "Development",<br>  "Owner": "Frankin Garcia"<br>}</pre> | no |
 | <a name="input_use_private_ip"></a> [use\_private\_ip](#input\_use\_private\_ip) | Flag to determine whether to use a private IP or public IP | `bool` | `true` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC ID | `string` | `""` | no |
