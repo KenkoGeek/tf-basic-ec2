@@ -8,12 +8,18 @@ variable "aws_region" {
   }
 }
 
+variable "windows" {
+  description = "If is Windows server"
+  type        = bool
+  default     = true
+}
+
 variable "vpc_id" {
   description = "VPC ID"
   type        = string
   default     = ""
   validation {
-    condition     = can(regex("^vpc-[a-z0-9]{17}$", var.vpc_id))
+    condition     = can(regex("^vpc-[a-f0-9]{8,63}$", var.vpc_id))  # Corrected regex
     error_message = "The VPC ID format is invalid. It should follow the pattern 'vpc-XXXXXXXX'."
   }
 }
@@ -21,10 +27,10 @@ variable "vpc_id" {
 variable "subnet_id" {
   description = "Subnet ID"
   type        = string
-  default     = "subnet-12345678"
+  default     = ""
   validation {
-    condition     = can(regex("^subnet-[a-z0-9]{17}$", var.subnet_id))
-    error_message = "The Subnet ID format is invalid. Must follow the pattern 'subnet-XXXXXXXX'"
+    condition     = can(regex("^subnet-[a-f0-9]{8,63}$", var.subnet_id))  # Corrected regex
+    error_message = "The Subnet ID format is invalid. Must follow the pattern 'subnet-XXXXXXXX'."
   }
 }
 
@@ -43,8 +49,8 @@ variable "instance_type" {
   type        = string
   default     = "t2.micro"
   validation {
-    condition     = can(regex("^(t2|t3|c5|m5).*$", var.instance_type))
-    error_message = "Invalid EC2 instance type. Please provide a valid instance type starting with 't2', 't3', 'c5', or 'm5'."
+    condition     = can(regex("^[a-z0-9]+\\.[a-z0-9]+$", var.instance_type))
+    error_message = "Invalid EC2 instance type. Please provide a valid instance type in the format 'instanceFamily.instanceSize', for example, 't2.micro'."
   }
 }
 
@@ -104,14 +110,82 @@ variable "kms_key_arn" {
   }
 }
 
-variable "security_group_cidr" {
-  description = "CIDR block for the security group"
-  type        = string
-  default     = "10.0.0.0/24"
-  validation {
-    condition     = can(regex("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}/\\d{1,2}$", var.security_group_cidr))
-    error_message = "Invalid CIDR block format. Please provide a valid CIDR block."
+variable "security_group_rules" {
+  description = "Map of security group rules with CIDR block, port, and description"
+  type = map(object({
+    cidr        = string
+    port        = number
+    description = string
+  }))
+  default = {
+    ssh = {
+      cidr        = "10.0.0.0/24"
+      port        = 22
+      description = "Allow SSH"
+    }
+    http = {
+      cidr        = "10.0.0.0/24"
+      port        = 80
+      description = "Allow HTTP"
+    }
+    https = {
+      cidr        = "10.0.0.0/24"
+      port        = 443
+      description = "Allow HTTPS"
+    }
   }
+}
+
+variable "additional_volumes" {
+  description = "Additional EBS volumes to attach to the instance. CAUTION: volumes aren't mounted automatically."
+  type = map(object({
+    device_name           = string
+    volume_size           = number
+    volume_type           = string
+    identifier            = string
+    mount_point           = string
+    encrypted             = bool
+    delete_on_termination = bool
+    kms_key_id            = string
+  }))
+  default = {
+    volume1 = {
+      device_name           = "/dev/sdf"
+      volume_size           = 50
+      identifier            = "logs"
+      mount_point           = "/mnt/logs"
+      volume_type           = "gp3"
+      encrypted             = true
+      delete_on_termination = true
+      kms_key_id            = ""
+    },
+    volume2 = {
+      device_name           = "/dev/sdg"
+      volume_size           = 100
+      identifier            = "data"
+      mount_point           = "/mnt/data"
+      volume_type           = "io2"
+      encrypted             = true
+      delete_on_termination = true
+      kms_key_id            = "arn:aws:kms:us-east-1:123456789012:key/abcd1234-abcd-1234-abcd-1234abcd1234"
+    }
+  }
+}
+
+variable "sns_topic_arn" {
+  description = "ARN of the SNS topic to send notifications to (optional). If not provided, a new topic will be created."
+  type        = string
+  default     = ""
+  validation {
+    condition     = var.sns_topic_arn == "" || can(regex("^arn:aws:sns:.*", var.sns_topic_arn))
+    error_message = "Invalid SNS key ID format. Please provide a valid ARN for the SNS Topic."
+  }
+}
+
+variable "email_addresses" {
+  description = "List of email addresses to subscribe to the SNS topic."
+  type        = list(string)
+  default     = []
 }
 
 variable "tags" {
@@ -120,15 +194,5 @@ variable "tags" {
   default = {
     Environment = "Development"
     Owner       = "Frankin Garcia"
-  }
-}
-
-variable "allowed_ports" {
-  description = "List of allowed ports separated by commas"
-  type        = string
-  default     = "22,80,443"
-  validation {
-    condition     = can(regex("^([0-9]+,)*[0-9]+$", var.allowed_ports))
-    error_message = "Invalid allowed ports format. Please provide a comma-separated list of ports."
   }
 }

@@ -1,17 +1,57 @@
-allowed_ports       = "22,80,443"
-ami                 = "ami-022e1a32d3f742bd8"
-aws_region          = "us-east-1"
-ebs_volume_size     = 20
-instance_name       = "my-ec2-instance"
-instance_type       = "t2.micro"
-key_name            = "key-name"
-kms_key_arn         = ""
-private_ip          = "10.0.0.40"
-security_group_cidr = "10.0.0.0/24"
-subnet_id           = "subnet-12345678"
+additional_volumes = {
+  "volume1": {
+    "delete_on_termination": true,
+    "device_name": "/dev/sdf",
+    "encrypted": true,
+    "identifier": "logs",
+    "kms_key_id": "",
+    "mount_point": "/mnt/logs",
+    "volume_size": 50,
+    "volume_type": "gp3"
+  },
+  "volume2": {
+    "delete_on_termination": true,
+    "device_name": "/dev/sdg",
+    "encrypted": true,
+    "identifier": "data",
+    "kms_key_id": "arn:aws:kms:us-east-1:123456789012:key/abcd1234-abcd-1234-abcd-1234abcd1234",
+    "mount_point": "/mnt/data",
+    "volume_size": 100,
+    "volume_type": "io2"
+  }
+}
+ami             = "ami-022e1a32d3f742bd8"
+aws_region      = "us-east-1"
+ebs_volume_size = 20
+email_addresses = []
+instance_name   = "my-ec2-instance"
+instance_type   = "t2.micro"
+key_name        = "key-name"
+kms_key_arn     = ""
+private_ip      = "10.0.0.40"
+security_group_rules = {
+  "http": {
+    "cidr": "10.0.0.0/24",
+    "description": "Allow HTTP",
+    "port": 80
+  },
+  "https": {
+    "cidr": "10.0.0.0/24",
+    "description": "Allow HTTPS",
+    "port": 443
+  },
+  "ssh": {
+    "cidr": "10.0.0.0/24",
+    "description": "Allow SSH",
+    "port": 22
+  }
+}
+sns_topic_arn = ""
+subnet_id     = ""
 tags = {
   "Environment": "Development",
   "Owner": "Frankin Garcia"
 }
 use_private_ip = true
 vpc_id         = ""
+windows        = true
